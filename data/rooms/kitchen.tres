@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RoomDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/room_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"kitchen"
+display_name = "Кухня"
+size = Vector3(7, 3, 7)
+wall_color = Color(0.72, 0.8, 0.78, 1)
+floor_color = Color(0.55, 0.55, 0.52, 1)
+tags = PackedStringArray("kitchen")
+furniture_slots = 5
+weight = 1.0
+min_difficulty_rank = 0

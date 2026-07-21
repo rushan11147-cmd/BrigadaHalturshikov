@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DifficultyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"normal"
+display_name = "Обычная"
+rank = 1
+room_count = 3
+furniture_fill = 0.65
+mission_item_bonus = 0
+mission_time_bonus = 0.0
+event_interval_min = 16.0
+event_interval_max = 32.0
+event_chance = 0.7
+blurb = "Стандартная халтура."

@@ -1,0 +1,294 @@
+[gd_scene load_steps=8 format=3 uid="uid://main_menu_brigada"]
+
+[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_menu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.12, 0.1, 0.08, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.91, 0.64, 0.18, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 28
+content_margin_top = 24
+content_margin_right = 28
+content_margin_bottom = 24
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn"]
+bg_color = Color(0.91, 0.55, 0.12, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 16
+content_margin_top = 12
+content_margin_right = 16
+content_margin_bottom = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(1, 0.68, 0.22, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 16
+content_margin_top = 12
+content_margin_right = 16
+content_margin_bottom = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+bg_color = Color(0.72, 0.4, 0.08, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 16
+content_margin_top = 12
+content_margin_right = 16
+content_margin_bottom = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_ghost"]
+bg_color = Color(0.25, 0.22, 0.18, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 16
+content_margin_top = 12
+content_margin_right = 16
+content_margin_bottom = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_controls"]
+bg_color = Color(0.1, 0.09, 0.07, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.91, 0.64, 0.18, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_menu")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.18, 0.14, 0.1, 1)
+
+[node name="GradientTop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 280.0
+grow_horizontal = 2
+color = Color(0.55, 0.32, 0.08, 0.45)
+
+[node name="AccentBar" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.91, 0.55, 0.12, 1)
+
+[node name="Brand" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -420.0
+offset_top = 48.0
+offset_right = 420.0
+offset_bottom = 180.0
+grow_horizontal = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.45, 1)
+theme_override_colors/font_outline_color = Color(0.2, 0.1, 0.02, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 52
+text = "БРИГАДА ХАЛТУРЩИКОВ"
+horizontal_alignment = 1
+
+[node name="Tagline" type="Label" parent="Brand"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.88, 0.75, 0.9)
+theme_override_font_sizes/font_size = 20
+text = "Переезды · Ремонт · Хаос с физикой"
+horizontal_alignment = 1
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Subtitle" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.78, 0.5, 1)
+theme_override_font_sizes/font_size = 16
+text = "Смена открыта. Кто на халтуру?"
+horizontal_alignment = 1
+
+[node name="DifficultyLabel" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Сложность"
+horizontal_alignment = 1
+
+[node name="DifficultyOption" type="OptionButton" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+
+[node name="DifficultyBlurb" type="Label" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.75, 0.65, 0.9)
+theme_override_font_sizes/font_size = 13
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Spacer" type="Control" parent="Center/Panel/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="PlayButton" type="Button" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_colors/font_hover_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_colors/font_pressed_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "Играть"
+
+[node name="ControlsButton" type="Button" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_ghost")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_ghost")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+text = "Управление"
+
+[node name="QuitButton" type="Button" parent="Center/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_ghost")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_ghost")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_pressed")
+text = "Выход"
+
+[node name="Footer" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -280.0
+offset_top = -40.0
+offset_right = 280.0
+offset_bottom = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.75, 0.68, 0.55, 0.7)
+theme_override_font_sizes/font_size = 14
+text = "Прототип · 1–4 игрока · Godot 4"
+horizontal_alignment = 1
+
+[node name="ControlsPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -180.0
+offset_right = 260.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_controls")
+
+[node name="Margin" type="MarginContainer" parent="ControlsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="ControlsPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="ControlsPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.45, 1)
+theme_override_font_sizes/font_size = 26
+text = "Управление"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="ControlsPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 18
+text = "WASD — ходить
+Мышь — смотреть
+Space — прыжок
+E — взять / отпустить
+ЛКМ — бросить
+R — заново заказ
+Esc — пауза / меню"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" type="Button" parent="ControlsPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_colors/font_hover_color = Color(0.12, 0.08, 0.04, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_hover")
+text = "Назад"

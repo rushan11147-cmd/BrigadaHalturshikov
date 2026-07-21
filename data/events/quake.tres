@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="EventDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/event_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"quake"
+display_name = "Соседи сверлят"
+message = "Соседи сверлят — всё трясётся!"
+event_type = 2
+weight = 1.0
+min_difficulty_rank = 0
+target_tag = &"physical_object"
+impulse_strength = 8.0

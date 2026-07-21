@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EventDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/event_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"mystery_box"
+display_name = "Лишняя коробка"
+message = "Откуда ещё одна коробка?!"
+event_type = 1
+weight = 0.8
+min_difficulty_rank = 1
+object_id = &"box"

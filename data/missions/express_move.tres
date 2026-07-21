@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/mission_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"express_move"
+display_name = "Срочный вызов"
+description = "Клиент уже едет! Быстрее тащите коробки."
+item_tag = &"job_item"
+base_item_count = 2
+base_time_limit = 50.0
+time_mult_per_rank = -6.0
+items_mult_per_rank = 1.5
+weight = 1.0

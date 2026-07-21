@@ -1,0 +1,83 @@
+[gd_scene load_steps=10 format=3 uid="uid://chair_brigada"]
+
+[ext_resource type="Script" path="res://scripts/objects/physical_object.gd" id="1_phys"]
+[ext_resource type="PhysicsMaterial" path="res://assets/physics/mat_chair.tres" id="2_mat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(0.5, 0.9, 0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_seat"]
+size = Vector3(0.48, 0.08, 0.48)
+
+[sub_resource type="BoxMesh" id="BoxMesh_back"]
+size = Vector3(0.48, 0.45, 0.06)
+
+[sub_resource type="BoxMesh" id="BoxMesh_leg"]
+size = Vector3(0.06, 0.42, 0.06)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.45, 0.28, 0.14, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_seat"]
+albedo_color = Color(0.35, 0.4, 0.55, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_chair"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="Chair" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 7
+mass = 10.0
+continuous_cd = true
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.15, 0.05)
+physics_material_override = ExtResource("2_mat")
+script = ExtResource("1_phys")
+object_mass = 10.0
+can_be_picked_up = true
+max_health = 100.0
+fall_damage_speed = 6.0
+display_name = "Стул"
+physics_mat = ExtResource("2_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_col")
+
+[node name="Seat" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.46, 0)
+mesh = SubResource("BoxMesh_seat")
+surface_material_override/0 = SubResource("StandardMaterial3D_seat")
+
+[node name="Back" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.72, -0.21)
+mesh = SubResource("BoxMesh_back")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="LegFL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.21, 0.18)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="LegFR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.21, 0.18)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="LegBL" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 0.21, -0.18)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="LegBR" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.21, -0.18)
+mesh = SubResource("BoxMesh_leg")
+surface_material_override/0 = SubResource("StandardMaterial3D_wood")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_chair")

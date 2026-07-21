@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=3 uid="uid://delivery_zone"]
+
+[ext_resource type="Script" path="res://scripts/world/delivery_zone.gd" id="1_zone"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_zone"]
+size = Vector3(3.2, 1.2, 3.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pad"]
+size = Vector3(3.2, 0.05, 3.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pad"]
+albedo_color = Color(0.2, 0.85, 0.35, 0.85)
+transparency = 1
+roughness = 0.9
+
+[node name="DeliveryZone" type="Area3D"]
+collision_layer = 0
+collision_mask = 4
+monitoring = true
+monitorable = false
+script = ExtResource("1_zone")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("BoxShape3D_zone")
+
+[node name="Pad" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+mesh = SubResource("BoxMesh_pad")
+surface_material_override/0 = SubResource("StandardMaterial3D_pad")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+billboard = 1
+text = "СДАЧА"
+font_size = 64
+outline_size = 8

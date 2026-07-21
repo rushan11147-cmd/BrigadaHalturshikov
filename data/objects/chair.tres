@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ObjectDef" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/object_def.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/objects/Chair.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"chair"
+display_name = "Стул"
+scene = ExtResource("2")
+tags = PackedStringArray("furniture", "clutter")
+spawn_weight = 1.4
+min_difficulty_rank = 0
+random_yaw = true

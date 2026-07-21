@@ -1,0 +1,4 @@
+# Food Worker by J-Toastie
+Source: user download (GLB)
+Path: assets/models/player/food_worker.glb
+Animations: Idle, Walk, Sprint, Jump, Grounded

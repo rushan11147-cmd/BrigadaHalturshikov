@@ -1,0 +1,44 @@
+[gd_scene load_steps=5 format=3 uid="uid://main_brigada"]
+
+[ext_resource type="Script" path="res://scripts/main/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://systems/job_manager.gd" id="2_job"]
+[ext_resource type="Script" path="res://scripts/generation/level_generator.gd" id="3_gen"]
+
+[sub_resource type="Environment" id="Environment_world"]
+background_mode = 1
+background_color = Color(0.55, 0.7, 0.85, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.75, 0.78, 0.85, 1)
+ambient_light_energy = 0.4
+tonemap_mode = 2
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_world")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.353553, 0.353553, 0, 0.707107, 0.707107, -0.5, -0.612372, 0.612372, 4, 12, 6)
+shadow_enabled = true
+
+[node name="FillLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 3.5, 0)
+light_color = Color(1, 0.95, 0.85, 1)
+light_energy = 0.6
+omni_range = 28.0
+
+[node name="GeneratedLevel" type="Node3D" parent="."]
+
+[node name="LevelGenerator" type="Node" parent="."]
+script = ExtResource("3_gen")
+level_root_path = NodePath("../GeneratedLevel")
+
+[node name="JobManager" type="Node" parent="."]
+script = ExtResource("2_job")
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/Player.tscn")
+spawn_path = NodePath("../Players")

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MissionDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/mission_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"deliver_boxes"
+display_name = "Переезд"
+description = "Затащи коробки в зону сдачи. Остальное можно ломать."
+item_tag = &"job_item"
+base_item_count = 3
+base_time_limit = 75.0
+time_mult_per_rank = -8.0
+items_mult_per_rank = 1.0
+weight = 2.0

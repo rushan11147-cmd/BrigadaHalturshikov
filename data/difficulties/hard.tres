@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DifficultyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"hard"
+display_name = "Жёсткая"
+rank = 2
+room_count = 4
+furniture_fill = 0.85
+mission_item_bonus = 1
+mission_time_bonus = -10.0
+event_interval_min = 10.0
+event_interval_max = 22.0
+event_chance = 0.9
+blurb = "Тесно, мало времени, события часто."

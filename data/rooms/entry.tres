@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RoomDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/room_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"entry"
+display_name = "Прихожая"
+size = Vector3(7, 3, 7)
+wall_color = Color(0.82, 0.78, 0.7, 1)
+floor_color = Color(0.42, 0.38, 0.34, 1)
+tags = PackedStringArray("start", "hallway")
+furniture_slots = 4
+weight = 1.2
+min_difficulty_rank = 0

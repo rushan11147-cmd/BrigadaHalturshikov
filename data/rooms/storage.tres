@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="RoomDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/room_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"storage"
+display_name = "Кладовка"
+size = Vector3(5, 3, 5)
+wall_color = Color(0.65, 0.62, 0.55, 1)
+floor_color = Color(0.35, 0.33, 0.3, 1)
+tags = PackedStringArray("storage", "delivery")
+furniture_slots = 3
+weight = 0.7
+min_difficulty_rank = 1

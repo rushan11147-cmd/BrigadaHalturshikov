@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://box_brigada"]
+
+[ext_resource type="Script" path="res://scripts/objects/physical_object.gd" id="1_phys"]
+[ext_resource type="PhysicsMaterial" path="res://assets/physics/mat_box.tres" id="2_mat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(0.55, 0.55, 0.55)
+
+[sub_resource type="BoxMesh" id="BoxMesh_vis"]
+size = Vector3(0.55, 0.55, 0.55)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_box"]
+albedo_color = Color(0.82, 0.55, 0.22, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_box"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="Box" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 7
+mass = 5.0
+continuous_cd = true
+physics_material_override = ExtResource("2_mat")
+script = ExtResource("1_phys")
+object_mass = 5.0
+can_be_picked_up = true
+max_health = 80.0
+display_name = "Коробка"
+physics_mat = ExtResource("2_mat")
+counts_for_job = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_col")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_vis")
+surface_material_override/0 = SubResource("StandardMaterial3D_box")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_box")

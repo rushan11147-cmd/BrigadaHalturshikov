@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="DifficultyDef" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/generation/difficulty_def.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"easy"
+display_name = "Лёгкая"
+rank = 0
+room_count = 2
+furniture_fill = 0.4
+mission_item_bonus = 0
+mission_time_bonus = 20.0
+event_interval_min = 25.0
+event_interval_max = 45.0
+event_chance = 0.4
+blurb = "Маленькая квартира, много времени."
