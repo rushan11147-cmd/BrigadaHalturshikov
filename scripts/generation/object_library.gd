@@ -45,19 +45,33 @@ func filter(rank: int, required_tags: PackedStringArray = []) -> Array[ObjectDef
 	return out
 
 
-func pick(rank: int, rng: RandomNumberGenerator, required_tags: PackedStringArray = []) -> ObjectDef:
+func pick(
+	rank: int,
+	rng: RandomNumberGenerator,
+	required_tags: PackedStringArray = [],
+	slot_size: StringName = &""
+) -> ObjectDef:
 	var pool := filter(rank, required_tags)
+	if slot_size != &"" and slot_size != &"any":
+		var narrowed: Array[ObjectDef] = []
+		for obj in pool:
+			if obj.slot_size == slot_size or obj.slot_size == &"any":
+				narrowed.append(obj)
+		if not narrowed.is_empty():
+			pool = narrowed
 	if pool.is_empty():
 		return null
 	return ContentLibrary.pick_weighted(pool, func(o: ObjectDef): return o.spawn_weight, rng) as ObjectDef
 
 
-func instantiate(def: ObjectDef, rng: RandomNumberGenerator = null) -> Node3D:
+func instantiate(def: ObjectDef, rng: RandomNumberGenerator = null, face_yaw_deg: Variant = null) -> Node3D:
 	if def == null or def.scene == null:
 		return null
 	var node := def.scene.instantiate() as Node3D
 	if node == null:
 		return null
-	if def.random_yaw and rng != null:
+	if face_yaw_deg != null:
+		node.rotation_degrees.y = float(face_yaw_deg)
+	elif def.random_yaw and rng != null:
 		node.rotate_y(deg_to_rad(rng.randf_range(0.0, 360.0)))
 	return node

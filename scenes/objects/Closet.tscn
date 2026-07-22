@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://closet_brigada"]
+
+[ext_resource type="Script" path="res://scripts/objects/physical_object.gd" id="1_phys"]
+[ext_resource type="PhysicsMaterial" path="res://assets/physics/mat_closet.tres" id="2_mat"]
+[ext_resource type="PackedScene" uid="uid://clgbiowjjmldi" path="res://assets/models/furniture/closet.glb" id="3_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(1.55, 2.9, 0.9)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_closet"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[node name="Closet" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 7
+mass = 55.0
+continuous_cd = true
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.4, 0)
+physics_material_override = ExtResource("2_mat")
+script = ExtResource("1_phys")
+object_mass = 55.0
+can_be_picked_up = true
+max_health = 180.0
+fall_damage_speed = 4.5
+fall_damage_multiplier = 14.0
+display_name = "Шкаф"
+physics_mat = ExtResource("2_mat")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+shape = SubResource("BoxShape3D_col")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="ClosetMesh" parent="Model" instance=ExtResource("3_model")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_closet")

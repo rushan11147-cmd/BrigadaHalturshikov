@@ -9,5 +9,7 @@ extends Resource
 @export var tags: PackedStringArray = []
 @export var spawn_weight: float = 1.0
 @export var min_difficulty_rank: int = 0
-## Случайный yaw при спавне (градусы).
+## Случайный yaw при спавне (если маркер без face_yaw).
 @export var random_yaw: bool = true
+## Размер слота: small | large | any
+@export var slot_size: StringName = &"small"

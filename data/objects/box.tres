@@ -12,3 +12,4 @@ tags = PackedStringArray("job_item", "clutter")
 spawn_weight = 2.0
 min_difficulty_rank = 0
 random_yaw = true
+slot_size = &"small"

@@ -103,11 +103,16 @@ func begin_grab(peer_id: int) -> void:
 	if is_held():
 		return
 	held_by_peer_id = peer_id
+	# Жёстко в руках — иначе постоянно цепляется и падает.
 	freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
 	freeze = true
+	gravity_scale = 1.0
+	linear_damp = 0.0
+	angular_damp = 0.0
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 	collision_layer = 0
+	collision_mask = 0
 	grabbed.emit(peer_id)
 
 
@@ -117,10 +122,18 @@ func end_grab(release_velocity: Vector3 = Vector3.ZERO) -> void:
 	var peer := held_by_peer_id
 	held_by_peer_id = -1
 	collision_layer = 4
+	collision_mask = 1 | 2 | 4
+	gravity_scale = 1.0
+	linear_damp = 0.0
+	angular_damp = 0.0
 	freeze = false
 	sleeping = false
 	linear_velocity = release_velocity
-	angular_velocity = Vector3.ZERO
+	angular_velocity = Vector3(
+		randf_range(-1.2, 1.2),
+		randf_range(-0.8, 0.8),
+		randf_range(-1.2, 1.2)
+	)
 	released.emit(peer)
 
 

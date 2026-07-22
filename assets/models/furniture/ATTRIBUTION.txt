@@ -1,0 +1,4 @@
+# Sofa / Closet by Quaternius
+Paths:
+- assets/models/furniture/sofa.glb
+- assets/models/furniture/closet.glb

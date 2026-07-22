@@ -38,12 +38,20 @@ func _physics_process(_delta: float) -> void:
 	if player == null or _anim == null:
 		return
 
+	# Несёт предмет — спокойный Idle/Walk (отдельной carry-анимации нет).
+	var carrying := false
+	var grab := player.find_child("GrabCarry", true, false)
+	if grab != null and grab.has_method("is_carrying") and grab.is_carrying():
+		carrying = true
+
 	if not player.is_on_floor():
 		_play(&"Armature|Jump")
 		return
 
 	var horizontal := Vector3(player.velocity.x, 0.0, player.velocity.z).length()
-	if horizontal > 4.2:
+	if carrying and horizontal <= 0.4:
+		_play(&"Armature|Idle")
+	elif horizontal > 4.2:
 		_play(&"Armature|Sprint")
 	elif horizontal > 0.4:
 		_play(&"Armature|Walk")

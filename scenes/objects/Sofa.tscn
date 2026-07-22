@@ -1,19 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://sofa_brigada"]
+[gd_scene load_steps=6 format=3 uid="uid://sofa_brigada"]
 
 [ext_resource type="Script" path="res://scripts/objects/physical_object.gd" id="1_phys"]
 [ext_resource type="PhysicsMaterial" path="res://assets/physics/mat_sofa.tres" id="2_mat"]
+[ext_resource type="PackedScene" uid="uid://bmsefc2qppa1r" path="res://assets/models/furniture/sofa.glb" id="3_model"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_col"]
-size = Vector3(2.0, 0.85, 0.9)
-
-[sub_resource type="BoxMesh" id="BoxMesh_base"]
-size = Vector3(2.0, 0.45, 0.85)
-
-[sub_resource type="BoxMesh" id="BoxMesh_back"]
-size = Vector3(2.0, 0.5, 0.2)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sofa"]
-albedo_color = Color(0.55, 0.22, 0.25, 1)
+size = Vector3(2.2, 0.95, 1.0)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_sofa"]
 properties/0/path = NodePath(".:position")
@@ -29,7 +21,7 @@ collision_mask = 7
 mass = 50.0
 continuous_cd = true
 center_of_mass_mode = 1
-center_of_mass = Vector3(0, -0.1, 0)
+center_of_mass = Vector3(0, -0.15, 0)
 physics_material_override = ExtResource("2_mat")
 script = ExtResource("1_phys")
 object_mass = 50.0
@@ -41,28 +33,13 @@ display_name = "Диван"
 physics_mat = ExtResource("2_mat")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.425, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0)
 shape = SubResource("BoxShape3D_col")
 
-[node name="Base" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.225, 0.05)
-mesh = SubResource("BoxMesh_base")
-surface_material_override/0 = SubResource("StandardMaterial3D_sofa")
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(0.65, 0, 0, 0, 0.65, 0, 0, 0, 0.65, 0, 0, 0)
 
-[node name="Back" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.32)
-mesh = SubResource("BoxMesh_back")
-surface_material_override/0 = SubResource("StandardMaterial3D_sofa")
-
-[node name="ArmL" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0.4, 0.05)
-mesh = SubResource("BoxMesh_back")
-surface_material_override/0 = SubResource("StandardMaterial3D_sofa")
-
-[node name="ArmR" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0.4, 0.05)
-mesh = SubResource("BoxMesh_back")
-surface_material_override/0 = SubResource("StandardMaterial3D_sofa")
+[node name="SofaMesh" parent="Model" instance=ExtResource("3_model")]
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_sofa")

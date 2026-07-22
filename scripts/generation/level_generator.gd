@@ -123,9 +123,18 @@ func _build_rooms(root: Node3D, defs: Array[RoomDef]) -> void:
 	var cursor_x := 0.0
 	player_spawn_global = Vector3.ZERO
 
+	# Одна ширина/глубина на всю квартиру — иначе на стыках дыры в небо.
+	var cell := Vector3(8.0, 3.0, 8.0)
+	for def in defs:
+		cell.x = maxf(cell.x, def.size.x)
+		cell.y = maxf(cell.y, def.size.y)
+		cell.z = maxf(cell.z, def.size.z)
+
 	for i in defs.size():
 		var def := defs[i]
-		var room := _instance_room(def)
+		var door_neg := i > 0
+		var door_pos := i < defs.size() - 1
+		var room := _instance_room(def, cell, door_neg, door_pos)
 		room.position = Vector3(cursor_x, 0.0, 0.0)
 		root.add_child(room)
 		_spawned_rooms.append(room)
@@ -134,62 +143,92 @@ func _build_rooms(root: Node3D, defs: Array[RoomDef]) -> void:
 		if spawn != null and (i == 0 or player_spawn_global == Vector3.ZERO):
 			player_spawn_global = spawn.global_position
 
-		cursor_x += def.size.x
+		cursor_x += cell.x
 
 
-func _instance_room(def: RoomDef) -> Node3D:
+func _instance_room(
+	def: RoomDef,
+	cell_size: Vector3,
+	door_neg_x: bool,
+	door_pos_x: bool
+) -> Node3D:
 	if def.scene != null:
 		var inst := def.scene.instantiate() as Node3D
 		if inst != null:
 			inst.name = str(def.id)
-			# Если в сцене нет спавнов — добавим процедурные маркеры на всякий случай.
-			if inst.find_child("FurnitureSpawn_0", true, false) == null \
-					and get_tree() != null:
-				pass
 			return inst
-	return RoomFabricator.fabricate(def)
+	var sized := def.duplicate() as RoomDef
+	sized.size = cell_size
+	return RoomFabricator.fabricate(sized, door_neg_x, door_pos_x)
 
 
 func _populate_furniture() -> void:
 	var fill := _difficulty.furniture_fill
 	for room in _spawned_rooms:
 		var markers := _get_furniture_markers(room)
+		var used_large_ids: Array[StringName] = []
 		for marker in markers:
 			if _rng.randf() > fill:
 				continue
-			var def := objects.pick(_difficulty.rank, _rng, PackedStringArray(["furniture", "clutter"]))
+			var slot: StringName = &"small"
+			if marker.has_meta("slot_size"):
+				slot = marker.get_meta("slot_size") as StringName
+			var tags := PackedStringArray(["furniture"])
+			if slot == &"large":
+				tags = PackedStringArray(["furniture", "heavy"])
+			var def := objects.pick(_difficulty.rank, _rng, tags, slot)
+			# Не ставить два одинаковых крупных подряд (два дивана).
+			if slot == &"large" and def != null and def.id in used_large_ids:
+				var alt := objects.pick(_difficulty.rank, _rng, tags, slot)
+				if alt != null and alt.id not in used_large_ids:
+					def = alt
+				elif alt != null and used_large_ids.size() > 0:
+					# Если альтернативы нет — пропуск второго large.
+					continue
+			if def == null:
+				def = objects.pick(_difficulty.rank, _rng, PackedStringArray(["furniture"]), &"small")
 			if def == null:
 				continue
 			if &"job_item" in def.tags and not (&"furniture" in def.tags):
 				continue
-			var node := objects.instantiate(def, _rng)
+			var yaw: Variant = null
+			if marker.has_meta("face_yaw"):
+				yaw = marker.get_meta("face_yaw")
+			var node := objects.instantiate(def, _rng, yaw)
 			if node == null:
 				continue
 			room.add_child(node)
-			node.global_position = marker.global_position + Vector3(0, 0.05, 0)
+			var lift := 0.02
+			if def.slot_size == &"large":
+				lift = 0.05
+				used_large_ids.append(def.id)
+			node.global_position = marker.global_position + Vector3(0, lift, 0)
 
 
 func _spawn_job_items() -> void:
 	if _spawned_rooms.is_empty():
 		return
 	var start_room := _spawned_rooms[0]
-	var markers := _get_furniture_markers(start_room)
+	var markers := _get_job_markers(start_room)
 
 	for i in _plan.item_count:
 		var def := objects.pick(_difficulty.rank, _rng, PackedStringArray([str(_plan.item_tag)]))
 		if def == null:
 			def = objects.get_by_id(&"box")
-		var node := objects.instantiate(def, _rng)
+		var node := objects.instantiate(def, _rng, 0.0)
 		if node == null:
 			continue
 		start_room.add_child(node)
-		var pos := start_room.global_position + Vector3(
-			_rng.randf_range(-1.5, 1.5),
-			0.4,
-			_rng.randf_range(-1.0, 1.5)
-		)
+		var pos: Vector3
 		if i < markers.size():
-			pos = markers[i].global_position + Vector3(0, 0.35, 0)
+			pos = markers[i].global_position + Vector3(0, 0.28, 0)
+		else:
+			# Запасная куча рядом со спавном.
+			var spawn := start_room.find_child("PlayerSpawn", true, false) as Marker3D
+			var base := start_room.global_position + Vector3(1.2, 0.28, 1.0)
+			if spawn != null:
+				base = spawn.global_position + Vector3(1.2, 0.28, -0.4)
+			pos = base + Vector3((i % 3) * 0.6, 0.0, (i / 3) * 0.6)
 		node.global_position = pos
 		if node is PhysicalObject:
 			(node as PhysicalObject).counts_for_job = true
@@ -230,6 +269,16 @@ func _get_furniture_markers(room: Node3D) -> Array[Node3D]:
 	for child in room.get_children():
 		if child is Node3D and (
 			child.is_in_group("furniture_spawn") or str(child.name).begins_with("FurnitureSpawn")
+		):
+			out.append(child as Node3D)
+	return out
+
+
+func _get_job_markers(room: Node3D) -> Array[Node3D]:
+	var out: Array[Node3D] = []
+	for child in room.get_children():
+		if child is Node3D and (
+			child.is_in_group("job_spawn") or str(child.name).begins_with("JobSpawn")
 		):
 			out.append(child as Node3D)
 	return out

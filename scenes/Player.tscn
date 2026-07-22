@@ -35,26 +35,32 @@ model_scale = 0.45
 yaw_offset_deg = 180.0
 hide_for_local_fps = false
 
-[node name="CameraPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
+[node name="CarryPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, -0.62)
 
-[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 0.35, 2.4)
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.15, 0)
+spring_length = 3.0
+margin = 0.3
+collision_mask = 1
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
 current = true
 fov = 70.0
+near = 0.08
 
-[node name="GrabCarry" type="Node3D" parent="CameraPivot/Camera3D"]
+[node name="GrabCarry" type="Node3D" parent="CameraPivot/SpringArm3D/Camera3D"]
 script = ExtResource("2_grab")
 
-[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/Camera3D/GrabCarry"]
+[node name="RayCast3D" type="RayCast3D" parent="CameraPivot/SpringArm3D/Camera3D/GrabCarry"]
 target_position = Vector3(0, 0, -4.5)
 collision_mask = 4
 collide_with_areas = false
 collide_with_bodies = true
 enabled = true
-
-[node name="HoldPoint" type="Marker3D" parent="CameraPivot/Camera3D/GrabCarry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, -1.9)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_player")
