@@ -1,6 +1,5 @@
 extends Node3D
-## PlayerModel — визуал Food Worker (J-Toastie) + анимации.
-## Вешается на Player как дочерний узел Model.
+## PlayerModel — Food Worker + лёгкое качание конечностей при спотыкании.
 
 const MODEL_SCENE := preload("res://assets/models/player/food_worker.glb")
 
@@ -10,11 +9,18 @@ const MODEL_SCENE := preload("res://assets/models/player/food_worker.glb")
 
 var _anim: AnimationPlayer
 var _model_root: Node3D
+var _skeleton: Skeleton3D
 var _current: StringName = &""
-## Смещение корня, чтобы геометрический центр был в (0,0,0).
-var _center_offset_y: float = -0.4
-var _half_extent: float = 0.45
-var _ball_mode: bool = false
+
+var _sway: bool = false
+var _sway_t: float = 0.0
+var _sway_side: float = 1.0
+var _sway_style: int = 0
+
+var _bone_body: int = -1
+var _bone_head: int = -1
+var _bone_hand_l: int = -1
+var _bone_hand_r: int = -1
 
 
 func _ready() -> void:
@@ -23,7 +29,13 @@ func _ready() -> void:
 	_model_root.scale = Vector3.ONE * model_scale
 	_model_root.rotation_degrees.y = yaw_offset_deg
 	add_child(_model_root)
-	_measure_bounds.call_deferred()
+
+	_skeleton = _model_root.find_child("Skeleton3D", true, false) as Skeleton3D
+	if _skeleton != null:
+		_bone_body = _skeleton.find_bone("Body")
+		_bone_head = _skeleton.find_bone("Head")
+		_bone_hand_l = _skeleton.find_bone("Hand.L")
+		_bone_hand_r = _skeleton.find_bone("Hand.R")
 
 	_anim = _model_root.find_child("AnimationPlayer", true, false) as AnimationPlayer
 	if _anim != null:
@@ -35,65 +47,71 @@ func _ready() -> void:
 		_set_meshes_visible(false)
 
 
-func _measure_bounds() -> void:
-	if _model_root == null or not is_inside_tree():
+func start_stumble_sway(style: int, side: float) -> void:
+	_sway = true
+	_sway_t = 0.0
+	_sway_style = style
+	_sway_side = side
+	if _anim != null:
+		_anim.stop()
+		_anim.active = false
+
+
+func tick_stumble_sway(delta: float, still_down: bool) -> void:
+	if not _sway or _skeleton == null:
 		return
-	var aabb := AABB()
-	var first := true
-	for mi in _model_root.find_children("*", "MeshInstance3D", true, false):
-		var mesh_i := mi as MeshInstance3D
-		if mesh_i.mesh == null:
+	_sway_t += delta
+	if not still_down:
+		# Плавно гасим после вставания.
+		_clear_bones_lerp(delta * 8.0)
+		if _sway_t > 0.35:
+			end_stumble_sway()
+		return
+
+	var w := sin(_sway_t * 12.0) * 0.2
+	var w2 := cos(_sway_t * 9.0) * 0.15
+	var tip := clampf(_sway_t / 0.55, 0.0, 1.0)
+
+	_set_bone(_bone_body, Vector3(0.25 * tip + w, 0.1 * tip * _sway_side, 0.2 * tip * _sway_side))
+	_set_bone(_bone_head, Vector3(0.35 * tip + w2 * 1.5, 0.2 * tip * _sway_side, w))
+	_set_bone(_bone_hand_l, Vector3(0.3 * tip + w, -0.8 * tip + w2, -0.5 * tip))
+	_set_bone(_bone_hand_r, Vector3(0.3 * tip + w2, 0.8 * tip - w, 0.5 * tip))
+
+
+func end_stumble_sway() -> void:
+	_sway = false
+	_sway_t = 0.0
+	_clear_bones()
+	if _anim != null:
+		_anim.active = true
+		_current = &""
+		_play(&"Armature|Idle")
+
+
+func _set_bone(idx: int, euler: Vector3) -> void:
+	if idx < 0 or _skeleton == null:
+		return
+	_skeleton.set_bone_pose_rotation(idx, Quaternion.from_euler(euler))
+
+
+func _clear_bones() -> void:
+	for idx in [_bone_body, _bone_head, _bone_hand_l, _bone_hand_r]:
+		_set_bone(idx, Vector3.ZERO)
+
+
+func _clear_bones_lerp(alpha: float) -> void:
+	if _skeleton == null:
+		return
+	for idx in [_bone_body, _bone_head, _bone_hand_l, _bone_hand_r]:
+		if idx < 0:
 			continue
-		# AABB в пространстве Model (уже с scale).
-		var xf: Transform3D = global_transform.affine_inverse() * mesh_i.global_transform
-		var local_aabb := _transform_aabb(xf, mesh_i.mesh.get_aabb())
-		if first:
-			aabb = local_aabb
-			first = false
-		else:
-			aabb = aabb.merge(local_aabb)
-	if first:
-		_center_offset_y = -0.42
-		_half_extent = 0.48
-		return
-	var center_y := aabb.position.y + aabb.size.y * 0.5
-	_center_offset_y = -center_y
-	_half_extent = clampf(
-		maxf(aabb.size.x, maxf(aabb.size.y, aabb.size.z)) * 0.5,
-		0.35,
-		0.62
-	)
-	if _ball_mode:
-		_model_root.position.y = _center_offset_y
-
-
-func _transform_aabb(xf: Transform3D, aabb: AABB) -> AABB:
-	var out := AABB(xf * aabb.position, Vector3.ZERO)
-	for i in 8:
-		out = out.expand(xf * aabb.get_endpoint(i))
-	return out
-
-
-func get_ball_radius() -> float:
-	return _half_extent + 0.08
-
-
-## Центрируем меш — кручение как мячик без закапывания в пол.
-func set_ball_mode(enabled: bool) -> void:
-	_ball_mode = enabled
-	if _model_root == null:
-		return
-	if enabled:
-		_model_root.position.y = _center_offset_y
-	else:
-		_model_root.position.y = 0.0
+		var q := _skeleton.get_bone_pose_rotation(idx).slerp(Quaternion.IDENTITY, clampf(alpha, 0.0, 1.0))
+		_skeleton.set_bone_pose_rotation(idx, q)
 
 
 func _physics_process(_delta: float) -> void:
 	var player := get_parent() as CharacterBody3D
-	if player == null or _anim == null:
-		return
-	if _ball_mode:
+	if player == null or _anim == null or not _anim.active:
 		return
 
 	var carrying := false
@@ -117,7 +135,7 @@ func _physics_process(_delta: float) -> void:
 
 
 func _play(anim_name: StringName) -> void:
-	if _anim == null:
+	if _anim == null or not _anim.active:
 		return
 	if not _anim.has_animation(anim_name):
 		return
